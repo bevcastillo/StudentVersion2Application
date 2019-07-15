@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">StudentVersion2Application</string>
+
+    <string-array name="course_list">
+        <item>-- SELECT COURSE --</item>
+        <item>BSBA</item>
+        <item>BSIT</item>
+        <item>BSED</item>
+        <item>BSME</item>
+        <item>BSHRM</item>
+    </string-array>
+</resources>
