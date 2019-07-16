@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".AddStudentActivity"
+    tools:context=".EditStudentActivity"
     android:padding="20dp">
 
     <ScrollView
@@ -18,7 +18,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/addstudentimage"
+                android:id="@+id/editstudentimage"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
@@ -26,7 +26,7 @@
                 android:layout_marginTop="50dp"/>
 
             <EditText
-                android:id="@+id/editTextLastname"
+                android:id="@+id/edit_editTextLastname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
@@ -34,14 +34,14 @@
                 android:padding="10dp" />
 
             <EditText
-                android:id="@+id/editTextFirstname"
+                android:id="@+id/edit_editTextFirstname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="FIRSTNAME"
                 android:padding="10dp" />
             <Spinner
-                android:id="@+id/spinnerCourse"
+                android:id="@+id/edit_spinnerCourse"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -54,7 +54,7 @@
                 android:layout_marginTop="20dp">
 
                 <Button
-                    android:id="@+id/btn_save"
+                    android:id="@+id/edit_btn_save"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -64,7 +64,7 @@
                     android:layout_marginRight="5dp"/>
 
                 <Button
-                    android:id="@+id/btn_cancel"
+                    android:id="@+id/edit_btn_cancel"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -76,4 +76,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>

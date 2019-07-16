@@ -28,12 +28,16 @@ public class AddStudentActivity extends AppCompatActivity implements View.OnClic
     Spinner course;
     Button btnsave, btncancel;
     CustomAdapter adapter;
+    private int pos;
     private static final int PICK_IMAGE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student);
+
+        //
+        String [] courselist = this.getResources().getStringArray(R.array.course_list);
 
         //
         studImage = (ImageView) findViewById(R.id.addstudentimage);
@@ -43,10 +47,31 @@ public class AddStudentActivity extends AppCompatActivity implements View.OnClic
         btnsave = (Button) findViewById(R.id.btn_save);
         btncancel = (Button) findViewById(R.id.btn_cancel);
 
+        //adding an event listeners to the elements
         studImage.setOnClickListener(this);
         btnsave.setOnClickListener(this);
         btncancel.setOnClickListener(this);
         course.setOnItemSelectedListener(this);
+
+        //checking if there is an edit action invoked
+        Bundle b = this.getIntent().getExtras();
+        if(b != null){
+            Uri image = b.getParcelable("image");
+            String lastname = b.getString("lastname");
+            String firstname = b.getString("firstname");
+            String newcourse = b.getString("course");
+
+                for(int i=0; i< courselist.length; i++)
+                    if (courselist[i].equals(newcourse)){
+                        pos=i;
+                        break;
+                    }
+                //
+                    this.studImage.setImageURI(image);
+                    this.lastname.setText(lastname);
+                    this.firstname.setText(firstname);
+                    this.course.setSelection(pos);
+        }
     }
 
 
@@ -74,10 +99,9 @@ public class AddStudentActivity extends AppCompatActivity implements View.OnClic
                     intent.putExtra("course", newCourse);
 
                     this.setResult(Activity.RESULT_OK, intent);
-                    Toast.makeText(getApplicationContext(), "New student successfully added!", Toast.LENGTH_SHORT).show();
                     finish();
                 }else{
-                    Toast.makeText(getApplicationContext(), "Error in adding a new student!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.btn_cancel:
