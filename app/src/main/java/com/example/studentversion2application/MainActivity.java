@@ -7,11 +7,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,19 +25,29 @@ import com.example.studentversion2application.Adapters.CustomAdapter;
 import com.example.studentversion2application.Model.Student;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     ArrayList<Student> studentArrayList = new ArrayList<>();
+    ArrayList<Student> findlist = new ArrayList<>();
+
     CustomAdapter adapter;
     private Uri imageUri;
+
     ListView lv;
-    AlertDialog.Builder options_builder, show_builder, edit_builder;
+    AlertDialog.Builder show_builder;
     AlertDialog dialog;
+
     LinearLayout layout;
     ImageView imageView;
     TextView stud_lname, stud_fname, stud_course;
+
     AdapterView.AdapterContextMenuInfo info;
+
+    //
+    EditText txtsearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +55,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
 
         lv = (ListView) findViewById(R.id.student_listview);
+        txtsearch = (EditText) findViewById(R.id.textsearch);
 
         adapter = new CustomAdapter(this, studentArrayList);
-        adapter.notifyDataSetChanged();
         lv.setAdapter(adapter);
-        registerForContextMenu(lv);
+        final CustomAdapter mAdapter = new CustomAdapter(this, findlist);
 
+        registerForContextMenu(lv);
         lv.setOnItemClickListener(this);
-//        lv.setOnItemLongClickListener(this);
 
         //
-        options_builder = new AlertDialog.Builder(this);
         show_builder = new AlertDialog.Builder(this);
-        edit_builder = new AlertDialog.Builder(this);
+
+        txtsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                findlist.clear();
+
+                String s1 = s.toString();
+                Pattern pattern = Pattern.compile(s1);
+                    for (int i=0; i<studentArrayList.size(); i++){
+                        String find = studentArrayList.get(i).getStudfname().toLowerCase();
+                        Matcher matcher = pattern.matcher(find);
+                        if(matcher.find()){
+                            findlist.add(studentArrayList.get(i));
+                            lv.setAdapter(mAdapter);
+                            adapter.notifyDataSetChanged();
+                        }//end if
+                    }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     //for menu
@@ -67,7 +107,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return true;
         }else if(id == R.id.action_add){
             Intent add = new Intent(MainActivity.this, AddStudentActivity.class);
-//            startActivity(add);
             startActivityForResult(add, 0);
         }
         return super.onOptionsItemSelected(item);
@@ -102,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             switch(requestCode){
                 case 0: //request for adding student information
                     studentArrayList.add(student);
+                    lv.setAdapter(adapter);
                     Toast.makeText(getApplicationContext(), "New student successfully added!", Toast.LENGTH_SHORT).show();
                     break;
                 case 1: //request for editing student information
@@ -166,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.delete: //delete student information
                 this.studentArrayList.remove(info.position);
                 this.adapter.notifyDataSetChanged();
+                lv.setAdapter(adapter);
                 Toast.makeText(this, "Student deleted!", Toast.LENGTH_LONG).show();
                 break;
         }
@@ -173,56 +214,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         return super.onContextItemSelected(item);
     }
 
-//    //handles when the listview is long clicked
-//    @Override
-//    public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-//        Student selectedStudents = studentArrayList.get(position);
-//
-//        final Uri image = selectedStudents.getUriImage();
-//        final String lastname = selectedStudents.getStudlname();
-//        final String firstname = selectedStudents.getStudfname();
-//        final String course = selectedStudents.getStudcourse();
-//        final ImageView imageView = new ImageView(this);
-//        imageView.setImageURI(image);
-//
-//        options_builder.setTitle("Choose an option");
-//        String [] options = {"Show", "Edit", "Delete"};
-//
-//        options_builder.setItems(options, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                switch (which){
-//                    case 0:
-//                        show_builder.setTitle(""+lastname+", "+firstname+"\n"+course);
-//                        show_builder.setIcon(R.drawable.user);
-//                        show_builder.setNeutralButton("Okay", null);
-//
-//                        AlertDialog show_dialog = show_builder.show();
-//                        show_dialog.show();
-//                        break;
-//                    case 1://call the add student activity
-//                        Intent intent = new Intent(MainActivity.this, AddStudentActivity.class);
-//                        Student s =  studentArrayList.get(position);
-//                        intent.putExtra("image", s.getUriImage());
-//                        intent.putExtra("lastname", s.getStudlname());
-//                        intent.putExtra("firstname", s.getStudfname());
-//                        intent.putExtra("course", s.getStudcourse());
-//                        startActivityForResult(intent, 1);
-//                        Toast.makeText(getApplicationContext(), "Student updated!", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case 2:
-//                        studentArrayList.remove(position);
-//                        adapter.notifyDataSetChanged();
-//                        Toast.makeText(getApplicationContext(), "Student removed!", Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
-//            }
-//        });
-//
-//        AlertDialog options_dialog = options_builder.show();
-//        options_dialog.show();
-//
-//        return true;
-//    }
+
 
 }
